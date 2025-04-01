@@ -16,7 +16,7 @@ provider "aws" {
 
 # Create vpc
 resource "aws_vpc" "tf_vpc" {
-  cidr_block = var.vpc_cidr
+  cidr_block = "var.vpc_cidr"
   tags = {
     Name = "var.vpc_name"
   }
@@ -24,7 +24,7 @@ resource "aws_vpc" "tf_vpc" {
 
 # Create Internet Gateway and attach to VPC
 resource "aws_internet_gateway" "tf_igw" {
-  vpc_id = aws_vpc.tf_vpc.id
+  vpc_id = "aws_vpc.tf_vpc.id"
   tags = {
     Name = "igw"
   }
@@ -32,8 +32,8 @@ resource "aws_internet_gateway" "tf_igw" {
 
 #create subnet 
 resource "aws_subnet" "tf_subnet" {
-  vpc_id = aws_vpc.tf_vpc.id
-  cidr_block = var.subnet_cidr
+  vpc_id = "aws_vpc.tf_vpc.id"
+  cidr_block = "var.subnet_cidr"
   map_public_ip_on_launch = true
   tags = {
     Name = "tf_subnet"
@@ -42,11 +42,11 @@ resource "aws_subnet" "tf_subnet" {
 
 #create route table and attach Internet Gateway
 resource "aws_route_table" "tf_rt" {
-  vpc_id = aws_vpc.tf_vpc.id
+  vpc_id = "aws_vpc.tf_vpc.id"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.tf_igw.id
+    gateway_id = "aws_internet_gateway.tf_igw.id"
   }
 
   tags = {
@@ -56,15 +56,15 @@ resource "aws_route_table" "tf_rt" {
 
 #associate route table with subnet
 resource "aws_route_table_association" "tf_rt_assoc" {
-  subnet_id = aws_subnet.tf_subnet.id
-  route_table_id = aws_route_table.tf_rt.id
+  subnet_id = "aws_subnet.tf_subnet.id"
+  route_table_id = "aws_route_table.tf_rt.id"
 }
 
 #create a Network Security Group
 resource "aws_security_group" "tf_sg" {
   name = "tf_sg"
   description = "Security Group for Terraform"
-  vpc_id = aws_vpc.tf_vpc.id
+  vpc_id = "aws_vpc.tf_vpc.id"
 
   ingress {
     description = "Allow SSH"
@@ -95,11 +95,11 @@ resource "aws_security_group" "tf_sg" {
 
 #create an EC2 instance
 resource "aws_instance" "tf_instance" {
-  ami = var.ami
-  instance_type = var.instance_type
-  subnet_id = aws_subnet.tf_subnet.id
+  ami = "var.ami"
+  instance_type = "var.instance_type"
+  subnet_id = "aws_subnet.tf_subnet.id"
   vpc_security_group_ids = [aws_security_group.tf_sg.id]
-  key_name = var.key_name
+  key_name = "var.key_name"
   associate_public_ip_address = true
   
   user_data = <<-EOF
@@ -111,7 +111,7 @@ resource "aws_instance" "tf_instance" {
               EOF 
   
   tags = {
-      Name = var.instance_name
+      Name = "var.instance_name"
   }
   
 }
