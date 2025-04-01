@@ -15,7 +15,7 @@ variable "secret_key" {
 
 variable "vpc_cidr" {
     type = string
-    default = "0.0.0.0/0"
+    default = "10.0.0.0/16"
 }   
 
 variable "vpc_name" {
